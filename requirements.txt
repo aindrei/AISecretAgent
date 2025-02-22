@@ -1,0 +1,9 @@
+beautifulsoup4>=4.12.2
+crawl4ai>=0.4.247
+google-genai>=1.0.0
+instructor>=1.7.2
+mistralai>=0.0.12
+ollama>=0.1.6
+openai>=1.60.1
+pytest>=7.4.0
+requests>=2.31.0
