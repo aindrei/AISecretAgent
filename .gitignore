@@ -1,5 +1,9 @@
 # Project Specific
+datasets/
 workflows/api_keys.py
+database.db
+dev_plan.md
+setup.md
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
@@ -172,3 +176,6 @@ cython_debug/
 
 # PyPI configuration file
 .pypirc
+
+# VSCode
+.vscode/
