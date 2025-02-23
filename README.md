@@ -11,9 +11,11 @@ Ex. Workflow that finds the best tourist attractions in the city:
 
 It executes a web search for "top attraction in <city>", it uses an llm to extract the top atractions from each web page,
 It collates all attractions together, generates an HTML report and writes it to a file.
+```
 WebSearchNode --> WebPageFetcherNode --> TextGenNode --> CollateNode --> SummarizeNode -> WriterNode
               ..........................................
               \-> WebPageFetcherNode --> TextGenNode --/
+```
 
 A worker class is:
 - a function that takes an input and produces an output
