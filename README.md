@@ -5,7 +5,7 @@ Idea:
 
 Explore if we can evolve AI agent workflows through a genetic approach.
 
-#Phase 1 (current): Static workflows that can chain different nodes to solve a problem
+# Phase 1 (current): Static workflows that can chain different nodes to solve a problem
 
 Ex. Workflow that finds the best tourist attractions in the city:
 
@@ -34,11 +34,11 @@ An AI workflow is an execution graph:
 - achieves this by chaining multiple AI workers, the output of one node is sent to the input of one or more nodes
 - starts execution from the start node and executes the connected nodes in DFS manner
 
-#Phase 2 (not started): Dynamic workflows constructed by an LLM for a specific problem
+# Phase 2 (not started): Dynamic workflows constructed by an LLM for a specific problem
 
 Instead of defining the execution graphs statically we let an LLM deconstruct the problem and select the best nodes to solve each step. This is what is usually called an agentic workflow.
 
-#Phase 3 (not started): Genetic evolution of dynamic workflows to find the most optimal workflow
+# Phase 3 (not started): Genetic evolution of dynamic workflows to find the most optimal workflow
 
 Assuming we are trying to solve a specific type of problems. We also assume we have a training set of problems with answers.
 The idea is to generate a set of agentic workflows to try to solve this type of problems and to use genetic algorithms to evolve the workflows towards increase ability to solve the problems in the training set.
