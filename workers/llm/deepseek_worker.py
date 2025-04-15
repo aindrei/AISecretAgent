@@ -17,10 +17,8 @@ class DeepSeekWorker(AIWorker):
         self.prompt = None
         self.system_prompt = None
 
-        self.client= OpenAI(api_key=api_key, base_url="https://api.deepseek.com")
-        self.structured_client = instructor.from_openai(
-            OpenAI(api_key=api_key, base_url="https://api.deepseek.com")
-        )
+        self.client = OpenAI(api_key=api_key, base_url="https://api.deepseek.com")
+        self.structured_client = instructor.from_openai(self.client)
 
     #@override
     def generate_response(self, prompt: str, system_prompt: str = None, output_format: str = None, response_model: BaseModel = None, **kwargs) -> str:
@@ -72,3 +70,32 @@ class DeepSeekWorker(AIWorker):
     #@override
     def get_worker_prompts(self) -> dict:
         return {"prompt": self.prompt, "system_prompt": self.system_prompt}
+
+if __name__ == "__main__":
+    
+    # Initialize worker
+    worker = DeepSeekWorker(
+        worker_name="test_worker",
+        instructions="Respond to: {input_text}",
+        model_name="deepseek-chat",
+    )
+    
+    # Test unstructured response
+    print("\nTesting unstructured response:")
+    response = worker.generate_response(
+        prompt="What is the capital of France?",
+        system_prompt="You are a helpful assistant."
+    )
+    print(f"Response: {response}")
+    
+    # Test structured response (using a simple Pydantic model)
+    class CapitalResponse(BaseModel):
+        country: str
+        capital: str
+    
+    print("\nTesting structured response:")
+    structured_response = worker.generate_response(
+        prompt="What is the capital of France?",
+        response_model=CapitalResponse
+    )
+    print(f"Structured response: {structured_response}")

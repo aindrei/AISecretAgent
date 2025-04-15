@@ -2,12 +2,11 @@ from typing import Dict, Any
 import requests
 from pydantic import BaseModel
 
-from ollama import chat
+from ollama import chat, embed
 from ollama import ChatResponse
 
 from workers.llm.ai_worker import AIWorker
 
-# Uses Ollama to generate responses with the specified model
 class OllamaWorker(AIWorker):
     def __init__(self, worker_name: str, instructions: str, model_name: str="llama2", use_lib: bool=True, base_url: str="http://localhost:11434"):
         super().__init__(worker_name)
@@ -38,6 +37,21 @@ class OllamaWorker(AIWorker):
             response = self._generate_response_with_url(prompt, system_prompt, output_format, response_model)
         print(f"Generated response: {response[:1000]}")
         return response
+
+    # Uses Ollama to generate embeddings with the specified model
+    def generate_embeddings(self, text: str) -> list:
+        """Generate embeddings for the given text using Ollama."""
+        embeddings = None
+        if self.use_lib:
+            embeddings = self._generate_embeddings_with_client(text)
+        else:
+            embeddings = self._generate_embeddings_with_url(text)
+        print(f"Generated embeddings with size: {len(embeddings)}")
+        return embeddings
+
+    #@override
+    def get_worker_prompts(self) -> dict:
+        return {"prompt": self.prompt, "system_prompt": self.system_prompt}
 
     # Generates a response using the Ollama library
     def _generate_response_with_client(self, prompt: str, system_prompt: str, output_format: str, response_model: BaseModel) -> str:
@@ -78,6 +92,36 @@ class OllamaWorker(AIWorker):
         except requests.RequestException as e:
             raise Exception(f"Failed to communicate with Ollama: {str(e)}")
 
-    #@override
-    def get_worker_prompts(self) -> dict:
-        return {"prompt": self.prompt, "system_prompt": self.system_prompt}
+    def _generate_embeddings_with_client(self, text: str) -> list:
+        """Generate embeddings for the given text using Ollama client."""
+        response = embed(
+            model=self.model_name,
+            input=text, 
+        )
+        embeddings = response["embeddings"][0]
+        return embeddings
+
+    def _generate_embeddings_with_url(self, text: str) -> list:
+        """Generate embeddings for the given text using Ollama API url."""
+        headers = {'Content-Type': 'application/json'}
+        data = {
+            'model': self.model_name,
+            'prompt': text,
+        }
+            
+        try:
+            response = requests.post(f"{self.base_url}/api/embeddings", json=data, headers=headers)
+            response.raise_for_status()
+            result = response.json()
+            return result.get('embedding', [])
+        except requests.RequestException as e:
+            raise Exception(f"Failed to generate embeddings with Ollama: {str(e)}")
+
+def main():
+    use_lib = True
+    worker = OllamaWorker("ollama", None, "mxbai-embed-large", use_lib) # 512 context, 1024 enbedding size
+    response = worker.generate_embeddings("How are you?")
+    print(len(response))
+
+if __name__ == "__main__":
+    main()

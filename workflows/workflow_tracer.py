@@ -51,7 +51,7 @@ class WorkflowTracer:
         else:
             self.logger.warning(f"Tried to end trace for unknown node {node_id}")
 
-    def record_input(self, node_id: str, input_text: str):
+    def record_input(self, node_id: str, input_text: str) -> None:
         """Record the input data for a node"""
         if node_id in self.traces:
             self.traces[node_id].input_data.append(input_text)
@@ -156,13 +156,13 @@ class WorkflowTracer:
                 for i, input_data in enumerate(trace.input_data):
                     report += f"<p>Input {i + 1}:</p>"
                     element_suffix = f"input-{node_index}-{i}"
-                    input_html = self.create_expandable_text(element_suffix, input_data, truncate_size)
+                    input_html = self._create_expandable_text(element_suffix, input_data, truncate_size)
                     report += input_html
             if trace.output_data:
                 report += f"<h3>Output Data: (cache hit={trace.cache_hit}) </h3>"
                 output = trace.output_data
                 element_suffix = f"output-{node_index}"
-                output_html = self.create_expandable_text(element_suffix, output, truncate_size)
+                output_html = self._create_expandable_text(element_suffix, output, truncate_size)
                 report += output_html
             if trace.worker_executions:
                 report += "<h3>Worker Executions:</h3>"
@@ -170,21 +170,21 @@ class WorkflowTracer:
                     report += f"<p>Worker {i + 1}: {worker_execution.worker_name}</p>"
                     report += f"<p>Input:</p>"
                     input_element_suffix = f"worker-input-{node_index}-{i}"
-                    report += self.create_expandable_text(input_element_suffix, worker_execution.worker_input, truncate_size)
+                    report += self._create_expandable_text(input_element_suffix, worker_execution.worker_input, truncate_size)
                     
                     report += f"<p>Output:</p>"
                     output_element_suffix = f"worker-output-{node_index}-{i}"
-                    report += self.create_expandable_text(output_element_suffix, worker_execution.worker_output, truncate_size)
+                    report += self._create_expandable_text(output_element_suffix, worker_execution.worker_output, truncate_size)
 
                     if worker_execution.worker_prompt:
                         report += f"<p>Prompt:</p>"
                         prompt_element_suffix = f"worker-prompt-{node_index}-{i}"
-                        report += self.create_expandable_text(prompt_element_suffix, worker_execution.worker_prompt, truncate_size)
+                        report += self._create_expandable_text(prompt_element_suffix, worker_execution.worker_prompt, truncate_size)
 
                     if worker_execution.worker_system_prompt:
                         report += f"<p>System Prompt:</p>"
                         system_prompt_element_suffix = f"worker-system-prompt-{node_index}-{i}"
-                        report += self.create_expandable_text(system_prompt_element_suffix, worker_execution.worker_system_prompt, truncate_size)
+                        report += self._create_expandable_text(system_prompt_element_suffix, worker_execution.worker_system_prompt, truncate_size)
 
                     report += f"<p>Execution Time: {worker_execution.execution_time}</p>"
             if trace.error:
@@ -195,7 +195,7 @@ class WorkflowTracer:
     
     # Creates HTML to show the text fully if it is smaller than truncate_size, 
     # or truncated and with a "Show More" link if it is larger
-    def create_expandable_text(self, element_suffix: str, text: str, truncate_size: int = 1000) -> str:
+    def _create_expandable_text(self, element_suffix: str, text: str, truncate_size: int = 1000) -> str:
         """Create expandable text for HTML display"""
         if len(text) > truncate_size:
             return f"""

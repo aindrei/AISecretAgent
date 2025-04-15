@@ -1,7 +1,41 @@
 from abc import ABC, abstractmethod
+from typing import Optional
 from state.nodes_cache import NodesCache
-from ..workflow_tracer import WorkflowTracer
+from workflows.workflow_tracer import WorkflowTracer
 
+# Silent tracer class
+class SilentTracer:
+    def start_trace(self, node_id: str) -> None:
+        pass
+
+    def stop_trace(self, node_id: str) -> None:
+        pass
+
+    def record_input(self, node_id: str, input_text: str) -> None:
+        pass
+
+    def record_output(self, node_id: str, output_text: str, cache_hit: bool = False) -> None:
+        pass
+
+    def log_worker(self, node_id: str, worker_name: str, worker_input, worker_output, prompt: str = None, system_prompt: str = None) -> None:
+        pass
+
+    def log_error(self, node_id: str, error: str) -> None:
+        pass
+
+    def get_node_trace(self, node_id: str):
+        return None
+    
+    def get_execution_time(self, node_id: str) -> Optional[float]:
+        return None
+
+    def get_all_traces(self):
+        return {}
+
+    def generate_report_as_html(self) -> str:
+        return ""
+
+# Abstract class for a node in a workflow. All nodes should derive from this class.
 class AbstractNode(ABC):
 
     @classmethod
@@ -16,8 +50,8 @@ class AbstractNode(ABC):
         self.result = None # The result of the node to be filled by the run() method
         self.tracer = None
 
-    def start(self, tracer: WorkflowTracer):
-        self.tracer = tracer
+    def start(self, tracer: WorkflowTracer = None):
+        self.tracer = tracer if tracer is not None else SilentTracer()
         self.tracer.start_trace(self.node_id)
         self.start_impl()
         pass

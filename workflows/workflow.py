@@ -68,7 +68,7 @@ class Workflow:
                 else:
                     next_node_input = output
                     
-                    # if the current node has multiple input connections, only call run_node once, at the end
+                    # if the current node has multiple input connections, only call run_node for next node once, at the end
                     input_connections = self.input_connections.get(node_id, [])
                     if len(input_connections) > 1 and call_counter[node_id] < len(input_connections):
                         return output
