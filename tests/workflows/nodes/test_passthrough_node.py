@@ -7,11 +7,13 @@ def test_passthrough_node_initialization():
 
 def test_passthrough_node_returns_input():
     node = PassthroughNode("test_node")
+    node.start()
     test_input = "Hello World"
     result = node.run(test_input)
     assert result == test_input
 
 def test_passthrough_node_with_empty_string():
     node = PassthroughNode("test_node") 
+    node.start()
     result = node.run("")
     assert result == ""
