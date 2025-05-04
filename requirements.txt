@@ -1,5 +1,7 @@
 beautifulsoup4>=4.12.2
+chromadb
 crawl4ai>=0.4.247
+docling
 google-genai>=1.0.0
 instructor>=1.7.2
 mistralai>=0.0.12

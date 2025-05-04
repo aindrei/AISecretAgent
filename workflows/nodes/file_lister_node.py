@@ -14,7 +14,7 @@ class FileListerNode(AbstractNode):
         pass
 
     def run_impl(self, input_text: str) -> str:
-        # input: file path
+        # input: {"file_location": "/path/to/files", "file_type": "local"}
         # output: {"files": [file_path1, file_path2, ...]}
         try:
             # Parse input JSON

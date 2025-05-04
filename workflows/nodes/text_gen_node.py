@@ -25,6 +25,7 @@ class TextGenNode(AbstractNode):
         self.model_provider = model_properties.get("model_provider", None)
         assert self.model_provider is not None, "Model provider is required"
         self.model_name = model_properties.get("model_name")
+        assert self.model_name is not None, "Model name is required"
         self.worker_name = self.model_provider + "_" + self.model_name
 
         instructions = model_properties.get("instructions", None)
